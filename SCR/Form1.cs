@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Configuration.Install;
+using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
+using System.Windows.Forms;
 
 namespace Self_Installer_service
 {
@@ -21,7 +15,6 @@ namespace Self_Installer_service
         {
             InitializeComponent();
         }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -36,7 +29,6 @@ namespace Self_Installer_service
             if (sc == null)
             {
                 ServiceInstall.Text = "Install Service";
-                
             }
             else
             {
@@ -47,14 +39,15 @@ namespace Self_Installer_service
 
         private void ServiceInstall_Click(object sender, EventArgs e)
         {
+            ServiceInstall.Enabled = false;
             if (sc == null)
             {
-                ManagedInstallerClass.InstallHelper(new string[] {Assembly.GetExecutingAssembly().Location});
+                ManagedInstallerClass.InstallHelper(new string[] { "/1", Assembly.GetExecutingAssembly().Location });
 
                 sc = ServiceController.GetServices()
                     .FirstOrDefault(s => s.ServiceName == BaseService.MyServiceName);
                 sc.WaitForStatus(ServiceControllerStatus.Running);
-                
+
                 if (sc.Status == ServiceControllerStatus.Running)
                 {
                     //sc.Stop();
@@ -63,15 +56,17 @@ namespace Self_Installer_service
                 {
                     //sc.Start();
                 }
-
-
             }
             else
             {
-                ManagedInstallerClass.InstallHelper(new string[] {"/u", Assembly.GetExecutingAssembly().Location});
-                
+                ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location });
             }
             ServiceCheck();
+            ServiceInstall.Enabled = true;
+        }
+
+        private void ServiceMode_Click(object sender, EventArgs e)
+        {
         }
     }
 }

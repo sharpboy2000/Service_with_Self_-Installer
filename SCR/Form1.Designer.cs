@@ -53,6 +53,7 @@ namespace Self_Installer_service
             this.ServiceMode.TabIndex = 0;
             this.ServiceMode.Text = "Stop";
             this.ServiceMode.UseVisualStyleBackColor = true;
+            this.ServiceMode.Click += new System.EventHandler(this.ServiceMode_Click);
             // 
             // Form1
             // 
