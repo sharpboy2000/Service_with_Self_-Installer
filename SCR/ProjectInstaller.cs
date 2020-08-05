@@ -11,6 +11,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Configuration.Install;
+using System.Diagnostics;
 using System.ServiceProcess;
 using System.Text;
 
@@ -33,6 +34,23 @@ namespace Self_Installer_service
             serviceInstaller.ServiceName = BaseService.MyServiceName;
             serviceInstaller.Description = BaseService.Description;
             serviceInstaller.DisplayName = BaseService.DisplayName;
+
+            //serviceInstaller.Installers.Clear();
+
+            foreach (Installer installer in serviceInstaller.Installers)
+            {
+                if (installer is EventLogInstaller)
+                {
+                    ((EventLogInstaller)installer).Log = "LOG"+ BaseService.MyServiceName;
+                    break;
+                }
+            }
+
+            // Create Event Source and Event Log     
+            //EventLogInstaller logInstaller = new  EventLogInstaller();
+            //logInstaller.Source = BaseService.MyServiceName; // use same as ServiceName
+            //logInstaller.Log ="LOG"+ BaseService.MyServiceName;
+            
 
             serviceInstaller.AfterInstall += new System.Configuration.Install.InstallEventHandler(this.serviceInstaller1_AfterInstall);
 

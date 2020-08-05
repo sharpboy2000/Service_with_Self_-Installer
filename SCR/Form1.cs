@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Self_Installer_service
 {
@@ -40,9 +41,38 @@ namespace Self_Installer_service
         private void ServiceInstall_Click(object sender, EventArgs e)
         {
             ServiceInstall.Enabled = false;
-            if (sc == null)
+
+                if (sc == null)
             {
+
+
+
+                var tempsource = "apptest";
+                var logname = "LOG" + BaseService.MyServiceName;
+
+                //if (EventLog.Exists(tempsource, System.Environment.MachineName))
+                //    EventLog.Delete(tempsource, System.Environment.MachineName);
+
+                //if (EventLog.SourceExists(tempsource, System.Environment.MachineName))
+                //    EventLog.DeleteEventSource(tempsource, System.Environment.MachineName);
+
+
+                //EventLog.CreateEventSource(tempsource, logname, System.Environment.MachineName);
+
+                if (EventLog.SourceExists(BaseService.MyServiceName, System.Environment.MachineName))
+                { 
+                    EventLog.DeleteEventSource(BaseService.MyServiceName, System.Environment.MachineName);
+                    }
+                else
+                {
+                    EventLog.CreateEventSource(BaseService.MyServiceName, logname, System.Environment.MachineName);
+                    //EventLog.DeleteEventSource(BaseService.MyServiceName, System.Environment.MachineName);
+                }
+
+
                 ManagedInstallerClass.InstallHelper(new string[] { "/1", Assembly.GetExecutingAssembly().Location });
+
+
 
                 sc = ServiceController.GetServices()
                     .FirstOrDefault(s => s.ServiceName == BaseService.MyServiceName);
@@ -59,6 +89,10 @@ namespace Self_Installer_service
             }
             else
             {
+                if (EventLog.Exists(BaseService.MyServiceName,System.Environment.MachineName))
+                EventLog.Delete(BaseService.MyServiceName,System.Environment.MachineName);
+
+
                 ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location });
             }
             ServiceCheck();
