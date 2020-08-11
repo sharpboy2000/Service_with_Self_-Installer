@@ -35,30 +35,44 @@ namespace Self_Installer_service
 
 
             //System.Diagnostics.Debugger.Launch();
-            var logname = "LOG" + ServiceName;
+            try
+            {
+                var logname = "LOG" + ServiceName;
 
-            //if (!EventLog.SourceExists(ServiceName))
-            //{
-            //    EventLog.CreateEventSource(ServiceName, logname);
-            //}
-            //else
-            //{
-            //    if (ServiceName != EventLog.LogNameFromSourceName(ServiceName, "."))
-            //    {
-            //        //EventLog.Delete(ServiceName, System.Environment.MachineName);
-            //        //EventLog.CreateEventSource(ServiceName, logname);
-            //    }
-            //}
+                //if (!EventLog.SourceExists(ServiceName))
+                //{
+                //    EventLog.CreateEventSource(ServiceName, logname);
+                //}
+                //else
+                //{
+                //    if (ServiceName != EventLog.LogNameFromSourceName(ServiceName, "."))
+                //    {
+                //        //EventLog.Delete(ServiceName, System.Environment.MachineName);
+                //        //EventLog.CreateEventSource(ServiceName, logname);
+                //    }
+                //}
 
-            MYeventLog = new System.Diagnostics.EventLog();
-            MYeventLog.Source = ServiceName;
-            MYeventLog.Log = logname;
-            MYeventLog.MachineName = System.Environment.MachineName;
-            MYeventLog.WriteEntry("log install", EventLogEntryType.FailureAudit);
+                MYeventLog = new System.Diagnostics.EventLog();
+                MYeventLog.Source = ServiceName;
+                MYeventLog.Log = logname;
+                MYeventLog.MachineName = System.Environment.MachineName;
+                MYeventLog.WriteEntry("log install", EventLogEntryType.FailureAudit);
 
 
-            tt = new System.Timers.Timer(5000);
-            tt.Elapsed += new System.Timers.ElapsedEventHandler(ttevent);
+                tt = new System.Timers.Timer(5000);
+                tt.Elapsed += new System.Timers.ElapsedEventHandler(ttevent);
+
+            }
+            catch (Exception ex)
+            {
+
+                using (System.IO.StreamWriter sw = new System.IO.StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "_startservice.txt"))
+                {
+                    sw.WriteLine("err " + ex.ToString());
+                    sw.Close();
+                }
+
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -69,11 +83,11 @@ namespace Self_Installer_service
 
         protected override void OnStart(string[] args)
         {
-            //MYeventLog.WriteEntry("aaaaaaaa");
-            while (DateTime.Now.Millisecond != 0)
-            {
-                //Console.WriteLine("timer{0} ",DateTime.Now.Millisecond );
-            }
+            ////MYeventLog.WriteEntry("aaaaaaaa");
+            //while (DateTime.Now.Millisecond != 0)
+            //{
+            //    //Console.WriteLine("timer{0} ",DateTime.Now.Millisecond );
+            //}
 
             tt.Enabled = true;
         }
